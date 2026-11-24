@@ -168,10 +168,10 @@ private fun BlockMeBottomNav(navController: NavController) {
         containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) {
         val items = listOf(
-            NavigationItem(Screen.Timer.route, Icons.Filled.Timer, Icons.Outlined.Timer, "Timer"),
-            NavigationItem(Screen.Stats.route, Icons.Filled.BarChart, Icons.Outlined.BarChart, "Stats"),
-            NavigationItem(Screen.Schedule.route, Icons.Filled.CalendarMonth, Icons.Outlined.CalendarMonth, "Schedule"),
-            NavigationItem(Screen.Settings.route, Icons.Filled.Settings, Icons.Outlined.Settings, "Settings"),
+            NavigationItem(Screen.Timer.route, Icons.Filled.Timer, Icons.Outlined.Timer, "计时"),
+            NavigationItem(Screen.Stats.route, Icons.Filled.BarChart, Icons.Outlined.BarChart, "统计"),
+            NavigationItem(Screen.Schedule.route, Icons.Filled.CalendarMonth, Icons.Outlined.CalendarMonth, "计划"),
+            NavigationItem(Screen.Settings.route, Icons.Filled.Settings, Icons.Outlined.Settings, "设置"),
         )
 
         items.forEach { item ->

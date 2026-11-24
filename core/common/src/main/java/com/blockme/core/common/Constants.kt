@@ -29,6 +29,8 @@ object Constants {
     const val KEY_PHONE_APP_OPEN = "phone_app_open"
     const val KEY_TOTAL_TEMPTATIONS = "total_temptations"
     const val KEY_CURRENT_SESSION_ID = "current_session_id"
+    const val KEY_WHITELISTED_PACKAGES = "whitelisted_packages"
+    const val KEY_WHITELIST_NAVIGATION_MODE = "whitelist_navigation_mode"
 
     // ── Intent Actions ────────────────────────────────────────────────────────
     const val ACTION_SESSION_COMPLETE = "com.blockme.app.ACTION_SESSION_COMPLETE"
@@ -36,6 +38,9 @@ object Constants {
     const val ACTION_SESSION_REMINDER = "com.blockme.app.ACTION_SESSION_REMINDER"
     const val ACTION_SHOW_OVERLAY = "com.blockme.app.ACTION_SHOW_OVERLAY"
     const val ACTION_HIDE_OVERLAY = "com.blockme.app.ACTION_HIDE_OVERLAY"
+    const val ACTION_OPEN_WHITELIST = "com.blockme.app.ACTION_OPEN_WHITELIST"
+    const val ACTION_WHITELIST_MODE_CHANGED = "com.blockme.app.ACTION_WHITELIST_MODE_CHANGED"
+    const val EXTRA_WHITELIST_MODE = "whitelist_mode"
     const val ACTION_TICK = "com.blockme.app.ACTION_TICK"
     const val ACTION_SCREEN_ON = "android.intent.action.SCREEN_ON"
     const val ACTION_USER_PRESENT = "android.intent.action.USER_PRESENT"

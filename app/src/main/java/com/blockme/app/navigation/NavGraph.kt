@@ -91,7 +91,7 @@ private fun CelebrationScreen(onDone: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Session Complete!",
+            text = "专注已完成！",
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontWeight = FontWeight.Bold
             ),
@@ -101,7 +101,7 @@ private fun CelebrationScreen(onDone: () -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "You stayed focused through the entire session.\nGreat work!",
+            text = "你坚持完成了整个专注时段。\n做得很好！",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -114,7 +114,7 @@ private fun CelebrationScreen(onDone: () -> Unit) {
             shape = MaterialTheme.shapes.large
         ) {
             Text(
-                text = "Start Another Session",
+                text = "开始下一次专注",
                 style = MaterialTheme.typography.titleMedium
             )
         }

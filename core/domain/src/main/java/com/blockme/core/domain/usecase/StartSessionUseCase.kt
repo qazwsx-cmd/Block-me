@@ -27,10 +27,10 @@ class StartSessionUseCase @Inject constructor(
      */
     suspend operator fun invoke(durationMs: Long, goalText: String = ""): Result<FocusSession> {
         if (durationMs <= 0L) {
-            return Result.Error("Duration must be greater than zero")
+            return Result.Error("专注时长必须大于 0")
         }
         if (durationMs > Constants.MAX_SESSION_DURATION_MS) {
-            return Result.Error("Duration cannot exceed 3 hours")
+            return Result.Error("专注时长不能超过 3 小时")
         }
 
         val now = System.currentTimeMillis()

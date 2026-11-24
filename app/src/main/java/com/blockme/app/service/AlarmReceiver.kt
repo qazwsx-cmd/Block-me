@@ -108,16 +108,16 @@ class AlarmReceiver : BroadcastReceiver() {
     private fun formatDuration(durationMs: Long): String {
         val minutes = durationMs / 60_000L
         return when {
-            minutes >= 60 -> "${minutes / 60}h${if (minutes % 60 > 0) " ${minutes % 60}m" else ""}"
-            else -> "${minutes}m"
+            minutes >= 60 -> "${minutes / 60} 小时${if (minutes % 60 > 0) " ${minutes % 60} 分钟" else ""}"
+            else -> "${minutes} 分钟"
         }
     }
 
     private fun showReminderNotification(context: Context, goal: String, durationLabel: String) {
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
         val notification = android.app.Notification.Builder(context, Constants.NOTIFICATION_CHANNEL_REMINDER)
-            .setContentTitle("Focus session starting soon")
-            .setContentText("Your $durationLabel session starts in 5 minutes${if (goal.isNotBlank()) " · $goal" else ""}")
+            .setContentTitle("专注即将开始")
+            .setContentText("${durationLabel} 后开始专注${if (goal.isNotBlank()) " · $goal" else ""}")
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setAutoCancel(true)
             .build()

@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.blockme.core.common.Constants
 import com.blockme.core.common.dataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -37,6 +38,8 @@ class UserPreferences @Inject constructor(
     private val KEY_ONBOARDING_COMPLETE = booleanPreferencesKey(Constants.KEY_ONBOARDING_COMPLETE)
     private val KEY_PHONE_APP_OPEN      = booleanPreferencesKey(Constants.KEY_PHONE_APP_OPEN)
     private val KEY_CURRENT_SESSION_ID  = longPreferencesKey(Constants.KEY_CURRENT_SESSION_ID)
+    private val KEY_WHITELISTED_PACKAGES = stringSetPreferencesKey(Constants.KEY_WHITELISTED_PACKAGES)
+    private val KEY_WHITELIST_NAVIGATION_MODE = booleanPreferencesKey(Constants.KEY_WHITELIST_NAVIGATION_MODE)
 
     // ── Flows ─────────────────────────────────────────────────────────────────
     val isSessionActive: Flow<Boolean>  = context.dataStore.data.map { it[KEY_IS_SESSION_ACTIVE] ?: false }
@@ -52,6 +55,8 @@ class UserPreferences @Inject constructor(
     val onboardingComplete: Flow<Boolean> = context.dataStore.data.map { it[KEY_ONBOARDING_COMPLETE] ?: false }
     val isPhoneAppOpen: Flow<Boolean>   = context.dataStore.data.map { it[KEY_PHONE_APP_OPEN] ?: false }
     val currentSessionId: Flow<Long>    = context.dataStore.data.map { it[KEY_CURRENT_SESSION_ID] ?: -1L }
+    val whitelistedPackages: Flow<Set<String>> = context.dataStore.data.map { it[KEY_WHITELISTED_PACKAGES] ?: emptySet() }
+    val whitelistNavigationMode: Flow<Boolean> = context.dataStore.data.map { it[KEY_WHITELIST_NAVIGATION_MODE] ?: false }
 
     // ── Write operations ──────────────────────────────────────────────────────
     suspend fun setSessionActive(active: Boolean) {
@@ -106,6 +111,14 @@ class UserPreferences @Inject constructor(
         context.dataStore.edit { it[KEY_CURRENT_SESSION_ID] = id }
     }
 
+    suspend fun setAppWhitelisted(packageName: String, allowed: Boolean) {
+        context.dataStore.edit { prefs ->
+            val packages = prefs[KEY_WHITELISTED_PACKAGES].orEmpty().toMutableSet()
+            if (allowed) packages.add(packageName) else packages.remove(packageName)
+            prefs[KEY_WHITELISTED_PACKAGES] = packages
+        }
+    }
+
     /** Atomically start a session — writes all related keys in one transaction. */
     suspend fun startSession(endTimeMs: Long, startTimeMs: Long, durationMs: Long, goal: String, sessionId: Long) {
         context.dataStore.edit { prefs ->
@@ -117,6 +130,7 @@ class UserPreferences @Inject constructor(
             prefs[KEY_LAST_DURATION_MS]    = durationMs
             prefs[KEY_CURRENT_SESSION_ID]  = sessionId
             prefs[KEY_PHONE_APP_OPEN]      = false
+            prefs[KEY_WHITELIST_NAVIGATION_MODE] = false
         }
     }
 
@@ -130,6 +144,7 @@ class UserPreferences @Inject constructor(
             prefs[KEY_SESSION_GOAL]        = ""
             prefs[KEY_PHONE_APP_OPEN]      = false
             prefs[KEY_CURRENT_SESSION_ID]  = -1L
+            prefs[KEY_WHITELIST_NAVIGATION_MODE] = false
         }
     }
 }

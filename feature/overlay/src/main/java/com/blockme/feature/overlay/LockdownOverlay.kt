@@ -42,6 +42,7 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -66,19 +67,19 @@ import com.blockme.core.ui.components.CountdownTimerWidget
 import com.blockme.core.ui.theme.BlockMeTheme
 
 /**
- * 42-Word Emergency Pledge Text.
+ * 中文紧急退出确认语句。
  */
 const val EMERGENCY_PLEDGE_TEXT =
-    "I acknowledge that I am interrupting my focus session before the planned duration. I understand that developing deep work habits requires strong discipline and resisting immediate gratification. By typing this pledge today, I consciously choose to end my full lockdown session early."
+    "我确认现在要提前结束本次专注锁定。我理解，专注习惯需要持续投入，也需要抵抗即时分心。输入这段确认文字，代表我主动选择提前结束本次锁定，并承担由此带来的后果。"
 
 /**
  * Normalizes a text string into a list of lowercase alphanumeric words without punctuation.
  */
 fun normalizeWords(text: String): List<String> {
+    // Chinese pledge is checked character by character; punctuation and spaces are ignored.
     return text.lowercase()
-        .replace(Regex("[^a-z0-9\\s]"), " ")
-        .split("\\s+".toRegex())
-        .filter { it.isNotBlank() }
+        .filter { it.isLetterOrDigit() }
+        .map { it.toString() }
 }
 
 /**
@@ -87,7 +88,7 @@ fun normalizeWords(text: String): List<String> {
  * Features:
  * - Solid status bar coverage (no wallpaper bleed) with accessible icons.
  * - Emergency Phone mode: Draggable mini floating timer popup leaving Phone app fully usable.
- * - 80-Tap Emergency Unlock: Word-by-word verified 42-word pledge challenge without distraction while typing.
+ * - Emergency unlock: 120 taps followed by character-by-character confirmation.
  *
  * SPDX-License-Identifier: MIT
  */
@@ -98,6 +99,8 @@ fun LockdownOverlayContent(
     goalText: String,
     isPhoneAppMode: Boolean,
     isUnlockChallengeEnabled: Boolean = true,
+    whitelistAppCount: Int = 0,
+    onWhitelistButtonClicked: () -> Unit = {},
     onPhoneButtonClicked: () -> Unit,
     onReturnFromPhoneApp: () -> Unit,
     onFloatingDrag: (dx: Float, dy: Float) -> Unit,
@@ -172,7 +175,7 @@ fun LockdownOverlayContent(
                         if (isUnlockChallengeEnabled && tapCount in 10..119) {
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Emergency unlock: $tapCount / 120 taps",
+                                text = "紧急退出进度：$tapCount / 120 次",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.primary
                             )
@@ -195,11 +198,20 @@ fun LockdownOverlayContent(
                         PulsingMotivationText()
                     }
 
-                    // Bottom section: Emergency Phone Button
+                    // Bottom section: whitelist entry and emergency phone access.
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(bottom = 24.dp)
                     ) {
+                        if (whitelistAppCount > 0) {
+                            OutlinedButton(
+                                onClick = onWhitelistButtonClicked,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("打开白名单应用（$whitelistAppCount）")
+                            }
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
                         FilledIconButton(
                             onClick = onPhoneButtonClicked,
                             modifier = Modifier.size(56.dp),
@@ -211,7 +223,7 @@ fun LockdownOverlayContent(
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Phone,
-                                contentDescription = "Open default Phone app",
+                                contentDescription = "打开默认拨号应用",
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -268,7 +280,7 @@ private fun FloatingTimerPopup(
         ) {
             Column {
                 Text(
-                    text = "LOCKDOWN ACTIVE (DRAG)",
+                    text = "专注锁定中（可拖动）",
                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp),
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -281,7 +293,7 @@ private fun FloatingTimerPopup(
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
                 imageVector = Icons.Filled.Fullscreen,
-                contentDescription = "Return to full lockdown",
+                contentDescription = "返回全屏锁定界面",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(22.dp)
             )
@@ -291,7 +303,7 @@ private fun FloatingTimerPopup(
 
 /**
  * In-Place Emergency Typing Challenge Sheet.
- * Validates word-by-word without distracting the user while actively composing words.
+ * Validates the Chinese confirmation phrase character by character.
  */
 @Composable
 private fun InPlaceEmergencyUnlockSheet(
@@ -302,7 +314,7 @@ private fun InPlaceEmergencyUnlockSheet(
     val targetWords = remember { normalizeWords(EMERGENCY_PLEDGE_TEXT) }
     val typedWords = remember(typedText) { normalizeWords(typedText) }
     val isTypingWordInProgress = remember(typedText) {
-        typedText.isNotEmpty() && !typedText.last().isWhitespace()
+        typedText.isNotEmpty() && typedText.last().isLetterOrDigit()
     }
 
     // Determine validated completed words vs in-progress word
@@ -322,11 +334,11 @@ private fun InPlaceEmergencyUnlockSheet(
                 if (typedWords[i] == targetWords[i]) {
                     matched++
                 } else {
-                    mistake = "Word #${i + 1} mismatch: expected \"${targetWords[i]}\", got \"${typedWords[i]}\""
+                    mistake = "第 ${i + 1} 个字符不匹配：应为“${targetWords[i]}”，实际为“${typedWords[i]}”"
                     break
                 }
             } else {
-                mistake = "Too many extra words"
+                mistake = "输入内容过长"
                 break
             }
         }
@@ -379,7 +391,7 @@ private fun InPlaceEmergencyUnlockSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Emergency Early Exit",
+                        text = "紧急提前退出",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.error
                     )
@@ -392,7 +404,7 @@ private fun InPlaceEmergencyUnlockSheet(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Close,
-                            contentDescription = "Close",
+                            contentDescription = "关闭",
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -401,7 +413,7 @@ private fun InPlaceEmergencyUnlockSheet(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    text = "Type the full 42-word pledge below to unlock early (punctuation/case ignored):",
+                    text = "请完整输入下方确认语句以提前结束锁定（不区分标点和空格）： ",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -427,7 +439,7 @@ private fun InPlaceEmergencyUnlockSheet(
                 OutlinedTextField(
                     value = typedText,
                     onValueChange = { typedText = it },
-                    label = { Text("Type pledge here ($completedMatchedCount/${targetWords.size} words matched)") },
+                    label = { Text("输入确认语句（已匹配 $completedMatchedCount/${targetWords.size} 个字符）") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(130.dp),
@@ -450,13 +462,13 @@ private fun InPlaceEmergencyUnlockSheet(
                     )
                 } else if (isFullyMatched) {
                     Text(
-                        text = "Perfect match! You typed all ${targetWords.size} words correctly.",
+                        text = "验证通过，确认语句输入正确。",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
                 } else {
                     Text(
-                        text = "Progress: $completedMatchedCount of ${targetWords.size} words matched correctly",
+                        text = "输入进度：$completedMatchedCount / ${targetWords.size} 个字符正确",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -470,7 +482,7 @@ private fun InPlaceEmergencyUnlockSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Cancel")
+                        Text("取消")
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
@@ -481,7 +493,7 @@ private fun InPlaceEmergencyUnlockSheet(
                             contentColor = MaterialTheme.colorScheme.onError
                         )
                     ) {
-                        Text("Stop Lockdown")
+                        Text("结束锁定")
                     }
                 }
             }
@@ -503,7 +515,7 @@ private fun PulsingMotivationText() {
     )
 
     Text(
-        text = "Stay focused on your objective.",
+        text = "专注当下，守住你的目标。",
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha),
         textAlign = TextAlign.Center

@@ -121,7 +121,7 @@ class TimerSetupViewModel @Inject constructor(
     fun onDurationChanged(durationMs: Long) {
         if (durationMs > Constants.MAX_SESSION_DURATION_MS) {
             _uiState.value = _uiState.value.copy(
-                errorMessage = "Maximum 3 hours allowed"
+                errorMessage = "最长专注时长为 3 小时"
             )
             return
         }

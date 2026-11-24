@@ -40,20 +40,20 @@ class NotificationHelper @Inject constructor(
     private fun createChannels() {
         val sessionChannel = NotificationChannel(
             Constants.NOTIFICATION_CHANNEL_SESSION,
-            "Focus Session",
+            "专注会话",
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = "Shows your active focus session status"
+            description = "显示当前专注会话状态"
             setShowBadge(false)
             lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         }
 
         val reminderChannel = NotificationChannel(
             Constants.NOTIFICATION_CHANNEL_REMINDER,
-            "Session Reminders",
+            "专注提醒",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = "Reminders before scheduled sessions start"
+            description = "定时专注开始前的提醒"
         }
 
         notificationManager.createNotificationChannels(listOf(sessionChannel, reminderChannel))
@@ -79,7 +79,7 @@ class NotificationHelper @Inject constructor(
         val contentText = if (goalText.isNotBlank()) "$timeStr · $goalText" else timeStr
 
         return NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_SESSION)
-            .setContentTitle("Focus Session Active")
+            .setContentTitle("专注进行中")
             .setContentText(contentText)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(accentColor)
@@ -113,8 +113,8 @@ class NotificationHelper @Inject constructor(
         )
 
         val notification = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_REMINDER)
-            .setContentTitle("Focus session starting soon")
-            .setContentText("Your $durationLabel focus session starts in 5 minutes${if (goalText.isNotBlank()) " · $goalText" else ""}")
+            .setContentTitle("专注即将开始")
+            .setContentText("$durationLabel 后开始专注${if (goalText.isNotBlank()) " · $goalText" else ""}")
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(accentColor)
             .setContentIntent(contentIntent)
@@ -134,8 +134,8 @@ class NotificationHelper @Inject constructor(
         )
 
         val notification = NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_REMINDER)
-            .setContentTitle("Focus Session Complete! 🎉")
-            .setContentText("You completed your focus session without unlocking. Great job!")
+            .setContentTitle("专注已完成！🎉")
+            .setContentText("你坚持完成了本次专注，没有提前解锁。做得好！")
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(accentColor)
             .setContentIntent(contentIntent)

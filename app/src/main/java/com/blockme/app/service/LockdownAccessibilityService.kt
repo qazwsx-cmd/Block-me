@@ -21,6 +21,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import java.util.Collections
 import javax.inject.Inject
 
@@ -52,6 +54,8 @@ class LockdownAccessibilityService : AccessibilityService() {
     // ── Session state ─────────────────────────────────────────────────────────
     @Volatile private var isSessionActive: Boolean = false
     @Volatile private var isPhoneAppOpen: Boolean = false
+    @Volatile private var whitelistNavigationMode: Boolean = false
+    @Volatile private var currentForegroundPackage: String? = null
 
     // Anti-loop lock debounce timestamp (ms)
     @Volatile private var lastLockTimestamp: Long = 0L
@@ -61,13 +65,16 @@ class LockdownAccessibilityService : AccessibilityService() {
     private val cachedLaunchers = Collections.synchronizedSet(mutableSetOf<String>())
     private val cachedInputMethods = Collections.synchronizedSet(mutableSetOf<String>())
     @Volatile private var cachedDialerPackage: String? = null
+    @Volatile private var cachedWhitelistedPackages: Set<String> = emptySet()
 
     private val screenReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == Intent.ACTION_USER_PRESENT) {
-                // Record unlock time to prevent immediate re-locking loop during window transition
-                lastUnlockTimestamp = SystemClock.uptimeMillis()
-                refreshPackageCache()
+            when (intent?.action) {
+                Intent.ACTION_USER_PRESENT -> {
+                    lastUnlockTimestamp = SystemClock.uptimeMillis()
+                    refreshPackageCache()
+                }
+                Constants.ACTION_OPEN_WHITELIST -> enterWhitelistNavigationMode()
             }
         }
     }
@@ -75,8 +82,15 @@ class LockdownAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
 
-        val filter = IntentFilter(Intent.ACTION_USER_PRESENT)
-        registerReceiver(screenReceiver, filter)
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_USER_PRESENT)
+            addAction(Constants.ACTION_OPEN_WHITELIST)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(screenReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(screenReceiver, filter)
+        }
 
         refreshPackageCache()
 
@@ -89,6 +103,30 @@ class LockdownAccessibilityService : AccessibilityService() {
         scope.launch {
             userPreferences.isPhoneAppOpen.collect { open ->
                 isPhoneAppOpen = open
+            }
+        }
+        scope.launch {
+            userPreferences.whitelistedPackages.collect { packages ->
+                cachedWhitelistedPackages = packages
+                val foreground = currentForegroundPackage
+                if (isSessionActive && whitelistNavigationMode &&
+                    (packages.isEmpty() || (
+                        foreground != null &&
+                        foreground !in packages &&
+                        foreground != packageName &&
+                        !isLauncherPackage(foreground) &&
+                        !isSystemUiOrVolumePackage(foreground) &&
+                        !isInputMethodPackage(foreground)
+                    ))
+                ) {
+                    setWhitelistNavigationMode(false)
+                    lockAndDismiss()
+                }
+            }
+        }
+        scope.launch {
+            userPreferences.whitelistNavigationMode.collect { enabled ->
+                whitelistNavigationMode = enabled
             }
         }
     }
@@ -147,6 +185,10 @@ class LockdownAccessibilityService : AccessibilityService() {
 
         if (!isBlockedKey) return false
 
+        // Navigation is available while the user is inside the whitelist flow.
+        // A prohibited app launch is detected independently by onAccessibilityEvent.
+        if (whitelistNavigationMode) return false
+
         // Back is allowed if default Phone app is in foreground
         if (event.keyCode == KeyEvent.KEYCODE_BACK && isPhoneAppAllowed()) {
             return false
@@ -171,6 +213,7 @@ class LockdownAccessibilityService : AccessibilityService() {
             AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
                 val packageName = event.packageName?.toString() ?: return
                 if (packageName.isBlank()) return
+                currentForegroundPackage = packageName
 
                 // 1. Allow our own application
                 if (packageName == applicationContext.packageName) {
@@ -185,7 +228,7 @@ class LockdownAccessibilityService : AccessibilityService() {
                             className.contains("SplitScreen", ignoreCase = true) ||
                             className.contains("OverviewProxy", ignoreCase = true)
 
-                    if (isRecentsOrSplit) {
+                    if (isRecentsOrSplit && !whitelistNavigationMode) {
                         lockAndDismiss()
                     }
                     return
@@ -203,7 +246,13 @@ class LockdownAccessibilityService : AccessibilityService() {
                     return
                 }
 
-                // 5. Allow Home Launcher packages (they harmlessly sit under the fullscreen overlay)
+                // 5. Explicitly selected apps remain usable throughout the focus session.
+                if (isWhitelistedPackage(packageName)) {
+                    if (!whitelistNavigationMode) setWhitelistNavigationMode(true)
+                    return
+                }
+
+                // 6. Allow Home Launcher packages (they harmlessly sit under the fullscreen overlay)
                 if (isLauncherPackage(packageName)) {
                     if (isPhoneAppOpen) {
                         scope.launch { userPreferences.setPhoneAppOpen(false) }
@@ -211,19 +260,51 @@ class LockdownAccessibilityService : AccessibilityService() {
                     return
                 }
 
-                // 6. If phone app was open and user navigated to ANY other non-phone app -> lock & reset
+                // 7. If phone app was open and user navigated to ANY other non-phone app -> lock & reset
                 if (isPhoneAppOpen) {
                     scope.launch { userPreferences.setPhoneAppOpen(false) }
                 }
 
-                // 7. Prohibited External App Launch (Settings tamper, WhatsApp, Chrome, YouTube, Games, etc.)
-                // Block immediately!
+                // 8. Leaving whitelist mode for any app not explicitly allowed restores lockdown.
+                if (whitelistNavigationMode) setWhitelistNavigationMode(false)
+
+                // Prohibited external app launch — block immediately.
                 lockAndDismiss()
             }
         }
     }
 
     // ── Fast In-Memory Helpers ────────────────────────────────────────────────
+
+    private fun isWhitelistedPackage(pkg: String): Boolean =
+        cachedWhitelistedPackages.contains(pkg)
+
+    private fun enterWhitelistNavigationMode() {
+        scope.launch {
+            val active = userPreferences.isSessionActive.first()
+            val packages = userPreferences.whitelistedPackages.first()
+            cachedWhitelistedPackages = packages
+            if (!active || packages.isEmpty()) return@launch
+
+            setWhitelistNavigationMode(true)
+            withContext(Dispatchers.Main) {
+                performGlobalAction(GLOBAL_ACTION_HOME)
+            }
+        }
+    }
+
+    private fun setWhitelistNavigationMode(enabled: Boolean) {
+        if (whitelistNavigationMode == enabled) return
+        whitelistNavigationMode = enabled
+        scope.launch {
+            userPreferences.setWhitelistNavigationMode(enabled)
+        }
+        val intent = Intent(Constants.ACTION_WHITELIST_MODE_CHANGED).apply {
+            setPackage(packageName)
+            putExtra(Constants.EXTRA_WHITELIST_MODE, enabled)
+        }
+        sendBroadcast(intent)
+    }
 
     private fun isPhoneAppAllowed(): Boolean {
         return isPhoneAppOpen && cachedDialerPackage != null

@@ -44,11 +44,11 @@ fun WeeklyBarChart(
     if (data.isEmpty()) return
 
     val maxFocusMs = data.maxOf { it.totalFocusMs }.coerceAtLeast(1L)
-    val dayFormat = SimpleDateFormat("EEE", Locale.getDefault())
+    val dayFormat = SimpleDateFormat("EEE", Locale.CHINA)
 
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = "This Week",
+            text = "本周专注时长",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -122,7 +122,7 @@ fun MonthlyHeatmap(
 
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = "Last 30 Days",
+            text = "最近 30 天",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -166,7 +166,7 @@ fun MonthlyHeatmap(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Less",
+                text = "较少",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -182,7 +182,7 @@ fun MonthlyHeatmap(
             }
             Spacer(modifier = Modifier.width(6.dp))
             Text(
-                text = "More",
+                text = "较多",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
