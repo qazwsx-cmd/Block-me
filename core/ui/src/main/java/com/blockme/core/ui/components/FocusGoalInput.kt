@@ -32,8 +32,8 @@ fun FocusGoalInput(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            label = { Text("Focus goal (optional)") },
-            placeholder = { Text("e.g. Study for exam, Read 20 pages…") },
+            label = { Text("专注目标（选填）") },
+            placeholder = { Text("例如：复习计算机网络、阅读 20 页") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -41,7 +41,7 @@ fun FocusGoalInput(
         if (recentGoals.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Recent goals",
+                text = "最近使用的目标",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(start = 4.dp)

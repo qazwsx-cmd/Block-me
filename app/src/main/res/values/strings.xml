@@ -1,129 +1,129 @@
 <resources>
-    <string name="app_name">Block me</string>
-    <string name="app_tagline">Master Your Focus</string>
+    <string name="app_name">专注锁机</string>
+    <string name="app_tagline">掌控专注，减少分心</string>
 
-    <!-- Accessibility Service -->
-    <string name="accessibility_service_description">Block me uses the Accessibility Service to detect when you press Home, Back, or Recent Apps during a lockdown session. When detected, your screen is locked immediately to prevent distraction. This service does NOT read any personal data, text, or content from your apps.</string>
-    <string name="accessibility_service_label">Block me Lockdown</string>
+    <!-- 无障碍服务 -->
+    <string name="accessibility_service_description">专注锁机使用无障碍服务检测专注期间的主页、返回和最近任务操作，并在检测到离开受限界面的操作时立即执行锁定。本服务不会读取应用中的个人数据、文本或内容。</string>
+    <string name="accessibility_service_label">专注锁机拦截服务</string>
 
-    <!-- Device Admin -->
-    <string name="device_admin_description">Block me requires Device Administrator permission to lock your screen when you attempt to navigate away during a focus session. This is the core feature that makes distraction impossible.</string>
+    <!-- 设备管理 -->
+    <string name="device_admin_description">专注锁机需要设备管理权限，以便在专注期间检测到受限制的导航操作时锁定屏幕。这是实现强制专注锁定的核心功能。</string>
 
-    <!-- Permissions -->
-    <string name="perm_overlay_title">Display Over Other Apps</string>
-    <string name="perm_overlay_desc">Required to show the fullscreen lockdown timer above all other apps during a focus session.</string>
-    <string name="perm_accessibility_title">Accessibility Service</string>
-    <string name="perm_accessibility_desc">Required to detect Home, Back, and Recent Apps presses and lock your screen immediately.</string>
-    <string name="perm_device_admin_title">Device Admin — Required / Must</string>
-    <string name="perm_device_admin_desc">Required to lock the screen when a blocked action is detected. Without this, the core lockdown cannot function.</string>
-    <string name="perm_battery_title">Ignore Battery Optimizations</string>
-    <string name="perm_battery_desc">Required to keep the focus timer running reliably in the background without being killed by the system.</string>
-    <string name="perm_notifications_title">Notifications</string>
-    <string name="perm_notifications_desc">Required to show the ongoing focus session notification with remaining time.</string>
-    <string name="perm_alarm_title">Exact Alarms</string>
-    <string name="perm_alarm_desc">Required for scheduled focus sessions to start at the exact configured time.</string>
+    <!-- 权限 -->
+    <string name="perm_overlay_title">显示在其他应用上层</string>
+    <string name="perm_overlay_desc">用于在专注期间将全屏锁定计时界面显示在其他应用上方。</string>
+    <string name="perm_accessibility_title">无障碍服务</string>
+    <string name="perm_accessibility_desc">用于检测主页、返回和最近任务操作，并立即执行锁定。</string>
+    <string name="perm_device_admin_title">设备管理权限（必需）</string>
+    <string name="perm_device_admin_desc">检测到受限制的操作时需要此权限来锁定屏幕。缺少此权限将无法正常执行锁定。</string>
+    <string name="perm_battery_title">忽略电池优化</string>
+    <string name="perm_battery_desc">帮助专注计时服务在后台稳定运行，降低被系统终止的概率。</string>
+    <string name="perm_notifications_title">通知权限</string>
+    <string name="perm_notifications_desc">用于显示正在进行的专注会话及剩余时间。</string>
+    <string name="perm_alarm_title">精确闹钟</string>
+    <string name="perm_alarm_desc">用于在设定的准确时间启动定时专注计划。</string>
 
-    <!-- Buttons -->
-    <string name="btn_grant">Grant Permission</string>
-    <string name="btn_enable">Enable</string>
-    <string name="btn_go">Go</string>
-    <string name="btn_start">Start Focus</string>
-    <string name="btn_stop">Stop</string>
-    <string name="btn_save">Save</string>
-    <string name="btn_cancel">Cancel</string>
-    <string name="btn_add_schedule">Add Schedule</string>
+    <!-- 按钮 -->
+    <string name="btn_grant">授予权限</string>
+    <string name="btn_enable">启用</string>
+    <string name="btn_go">前往</string>
+    <string name="btn_start">开始专注</string>
+    <string name="btn_stop">停止</string>
+    <string name="btn_save">保存</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_add_schedule">添加计划</string>
 
-    <!-- Status -->
-    <string name="status_granted">Granted</string>
-    <string name="status_not_granted">Not Granted</string>
-    <string name="status_enabled">Enabled</string>
-    <string name="status_disabled">Disabled</string>
+    <!-- 状态 -->
+    <string name="status_granted">已授权</string>
+    <string name="status_not_granted">未授权</string>
+    <string name="status_enabled">已启用</string>
+    <string name="status_disabled">已停用</string>
 
-    <!-- Timer -->
-    <string name="timer_idle">Ready to focus</string>
-    <string name="timer_running">Stay strong</string>
-    <string name="timer_completed">Session Complete!</string>
-    <string name="focus_goal_hint">What\'s your focus goal? (optional)</string>
-    <string name="timer_duration_label">Duration</string>
-    <string name="timer_custom">Custom</string>
-    <string name="timer_max_warning">Maximum 3 hours allowed</string>
+    <!-- 计时器 -->
+    <string name="timer_idle">准备开始专注</string>
+    <string name="timer_running">保持专注</string>
+    <string name="timer_completed">专注已完成！</string>
+    <string name="focus_goal_hint">本次专注目标是什么？（选填）</string>
+    <string name="timer_duration_label">专注时长</string>
+    <string name="timer_custom">自定义</string>
+    <string name="timer_max_warning">最长专注时长为 3 小时</string>
 
-    <!-- Notification -->
-    <string name="notif_channel_session_name">Focus Session</string>
-    <string name="notif_channel_session_desc">Shows your active focus session status</string>
-    <string name="notif_channel_reminder_name">Session Reminders</string>
-    <string name="notif_channel_reminder_desc">Reminders before scheduled sessions start</string>
-    <string name="notif_session_title">Focus Session Active</string>
-    <string name="notif_session_content">%s remaining</string>
-    <string name="notif_view_timer">View Timer</string>
-    <string name="notif_reminder_title">Focus session starting soon</string>
-    <string name="notif_reminder_content">Your %s focus session starts in 5 minutes</string>
+    <!-- 通知 -->
+    <string name="notif_channel_session_name">专注会话</string>
+    <string name="notif_channel_session_desc">显示当前专注会话状态</string>
+    <string name="notif_channel_reminder_name">专注提醒</string>
+    <string name="notif_channel_reminder_desc">定时专注开始前的提醒</string>
+    <string name="notif_session_title">专注进行中</string>
+    <string name="notif_session_content">剩余 %s</string>
+    <string name="notif_view_timer">查看计时器</string>
+    <string name="notif_reminder_title">专注即将开始</string>
+    <string name="notif_reminder_content">你的 %s 专注将在 5 分钟后开始</string>
 
-    <!-- Stats -->
-    <string name="stats_total_sessions">Total Sessions</string>
-    <string name="stats_total_hours">Total Hours</string>
-    <string name="stats_current_streak">Current Streak</string>
-    <string name="stats_longest_streak">Longest Streak</string>
-    <string name="stats_avg_duration">Avg Duration</string>
-    <string name="stats_temptations">Temptation Attempts</string>
-    <string name="stats_days">days</string>
-    <string name="stats_no_data">No sessions yet. Start your first focus session!</string>
+    <!-- 统计 -->
+    <string name="stats_total_sessions">累计专注次数</string>
+    <string name="stats_total_hours">累计专注时长</string>
+    <string name="stats_current_streak">当前连续天数</string>
+    <string name="stats_longest_streak">最长连续天数</string>
+    <string name="stats_avg_duration">平均单次时长</string>
+    <string name="stats_temptations">分心尝试次数</string>
+    <string name="stats_days">天</string>
+    <string name="stats_no_data">还没有专注记录。开始第一次专注吧！</string>
 
-    <!-- Settings -->
-    <string name="settings_haptic">Haptic Pulse</string>
-    <string name="settings_haptic_desc">Vibrate every minute during session</string>
-    <string name="settings_amoled">AMOLED Dark Mode</string>
-    <string name="settings_amoled_desc">Use pure black background for AMOLED screens</string>
-    <string name="settings_unlock_challenge">Unlock Challenge</string>
-    <string name="settings_unlock_challenge_desc">Require a challenge to exit early</string>
-    <string name="settings_export">Export Data</string>
-    <string name="settings_export_desc">Export all focus data as JSON</string>
-    <string name="settings_about">About Block me</string>
-    <string name="settings_version">Version %s</string>
-    <string name="settings_license">MIT License</string>
-    <string name="settings_privacy">We don\'t collect anything, period.</string>
+    <!-- 设置 -->
+    <string name="settings_haptic">每分钟震动提醒</string>
+    <string name="settings_haptic_desc">专注期间每分钟轻微震动一次</string>
+    <string name="settings_amoled">AMOLED 纯黑模式</string>
+    <string name="settings_amoled_desc">为 AMOLED 屏幕使用纯黑背景</string>
+    <string name="settings_unlock_challenge">提前退出挑战</string>
+    <string name="settings_unlock_challenge_desc">提前结束专注前需要完成验证</string>
+    <string name="settings_export">导出数据</string>
+    <string name="settings_export_desc">将所有专注数据导出为 JSON 文件</string>
+    <string name="settings_about">关于专注锁机</string>
+    <string name="settings_version">版本 %s</string>
+    <string name="settings_license">MIT 开源许可证</string>
+    <string name="settings_privacy">我们不会收集任何数据。</string>
 
-    <!-- Overlay -->
-    <string name="overlay_phone_btn">Call</string>
-    <string name="overlay_stay_strong">Stay strong!</string>
-    <string name="overlay_locked">Focus Mode Active</string>
+    <!-- 锁定界面 -->
+    <string name="overlay_phone_btn">拨号</string>
+    <string name="overlay_stay_strong">坚持专注！</string>
+    <string name="overlay_locked">专注模式已启用</string>
 
-    <!-- Motivational quotes -->
+    <!-- 激励语 -->
     <string-array name="motivational_quotes">
-        <item>Discipline is choosing between what you want now and what you want most.</item>
-        <item>Focus is the art of knowing what to ignore.</item>
-        <item>Your future self is watching you right now through your memories.</item>
-        <item>The successful warrior is the average person, with laser-like focus.</item>
-        <item>Concentrate all your thoughts upon the work at hand.</item>
-        <item>Where focus goes, energy flows.</item>
-        <item>Deep work is the superpower of the 21st century.</item>
-        <item>You are stronger than your urges.</item>
-        <item>Every minute you protect is a minute invested in your future.</item>
-        <item>Distraction is the enemy of greatness.</item>
+        <item>自律，就是在眼前的欲望与真正重要的目标之间作出选择。</item>
+        <item>专注的艺术，在于知道哪些事情应该忽略。</item>
+        <item>未来的自己，正在等待今天的努力。</item>
+        <item>真正强大的人，能够把注意力持续放在目标上。</item>
+        <item>把全部心思放在眼前正在做的事情上。</item>
+        <item>注意力流向哪里，能量就汇聚到哪里。</item>
+        <item>深度工作，是这个时代重要的能力。</item>
+        <item>你可以比一时的冲动更坚定。</item>
+        <item>守住的每一分钟，都是对未来的投资。</item>
+        <item>分心，是实现目标的阻碍。</item>
     </string-array>
 
-    <!-- Navigation -->
-    <string name="nav_timer">Timer</string>
-    <string name="nav_stats">Stats</string>
-    <string name="nav_schedule">Schedule</string>
-    <string name="nav_settings">Settings</string>
+    <!-- 导航 -->
+    <string name="nav_timer">计时</string>
+    <string name="nav_stats">统计</string>
+    <string name="nav_schedule">计划</string>
+    <string name="nav_settings">设置</string>
 
-    <!-- Schedules -->
-    <string name="schedule_daily">Every Day</string>
-    <string name="schedule_weekdays">Weekdays</string>
-    <string name="schedule_weekends">Weekends</string>
-    <string name="schedule_custom_days">Custom Days</string>
-    <string name="schedule_no_schedules">No schedules yet. Add one to automate your focus!</string>
+    <!-- 定时计划 -->
+    <string name="schedule_daily">每天</string>
+    <string name="schedule_weekdays">工作日</string>
+    <string name="schedule_weekends">周末</string>
+    <string name="schedule_custom_days">自定义日期</string>
+    <string name="schedule_no_schedules">还没有定时计划。添加一条计划来自动开始专注。</string>
 
-    <!-- Celebration -->
-    <string name="celebration_title">🎉 Session Complete!</string>
-    <string name="celebration_message">You stayed focused for the entire session. Great work!</string>
+    <!-- 完成页面 -->
+    <string name="celebration_title">🎉 专注已完成！</string>
+    <string name="celebration_message">你坚持完成了整个专注时段，做得很好！</string>
 
-    <!-- Onboarding -->
-    <string name="onboarding_welcome_title">Block me</string>
-    <string name="onboarding_welcome_subtitle">Your no-compromise focus companion</string>
-    <string name="onboarding_welcome_desc">Block me locks your phone completely during focus sessions, helping you eliminate distractions and build deep work habits.</string>
-    <string name="onboarding_permissions_title">Setup Permissions</string>
-    <string name="onboarding_permissions_subtitle">Grant all permissions to enable full lockdown</string>
-    <string name="onboarding_go_hint">Grant all permissions above to continue</string>
+    <!-- 初次设置 -->
+    <string name="onboarding_welcome_title">专注锁机</string>
+    <string name="onboarding_welcome_subtitle">帮助你减少分心，保持专注</string>
+    <string name="onboarding_welcome_desc">专注期间，专注锁机会限制离开当前界面的操作，帮助你减少干扰并建立稳定的深度工作习惯。</string>
+    <string name="onboarding_permissions_title">配置权限</string>
+    <string name="onboarding_permissions_subtitle">授予全部必要权限以启用完整锁定</string>
+    <string name="onboarding_go_hint">请先授予上方列出的全部权限</string>
 </resources>

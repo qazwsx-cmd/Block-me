@@ -103,7 +103,7 @@ fun PermissionGateScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Block me",
+            text = "专注锁机",
             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -111,7 +111,7 @@ fun PermissionGateScreen(
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = "Setup Permissions",
+            text = "配置必要权限",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -119,7 +119,7 @@ fun PermissionGateScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Grant the following permissions to enforce the lockdown timer during focus sessions.",
+            text = "请授予以下权限，以便在专注期间正常运行锁定计时器。",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -152,7 +152,7 @@ fun PermissionGateScreen(
             shape = MaterialTheme.shapes.large
         ) {
             Text(
-                text = if (state.allGranted) "Get Started" else "Grant all permissions above",
+                text = if (state.allGranted) "开始使用" else "请先授予以上全部权限",
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
             )
         }
@@ -223,7 +223,7 @@ private fun PermissionCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = if (status.isGranted) "Granted" else "Required",
+                    text = if (status.isGranted) "已授权" else "必需",
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                     color = if (status.isGranted) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.error
@@ -238,7 +238,7 @@ private fun PermissionCard(
                     shape = MaterialTheme.shapes.small
                 ) {
                     Text(
-                        text = "Grant",
+                        text = "去授权",
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
@@ -249,15 +249,15 @@ private fun PermissionCard(
 
 private fun permissionLabels(item: PermissionItem): Pair<String, String> = when (item) {
     PermissionItem.OVERLAY ->
-        "Display Over Other Apps" to "Shows the lockdown timer above all open apps."
+        "显示在其他应用上层" to "在其他应用上方显示全屏锁定界面。"
     PermissionItem.ACCESSIBILITY ->
-        "Accessibility Service" to "Detects Home, Back & Recents to lock screen immediately."
+        "无障碍服务" to "检测主页、返回和最近任务操作，并立即执行锁定。"
     PermissionItem.DEVICE_ADMIN ->
-        "Device Admin" to "Locks the screen instantly when blocked navigation is detected."
+        "设备管理权限" to "检测到受限制的导航操作时立即锁屏。"
     PermissionItem.BATTERY_OPTIMIZATION ->
-        "Ignore Battery Optimizations" to "Prevents the OS from terminating the active timer."
+        "忽略电池优化" to "降低系统在后台终止专注计时服务的概率。"
     PermissionItem.NOTIFICATIONS ->
-        "Notifications" to "Displays session progress and completion alerts."
+        "通知权限" to "显示专注进度和完成提醒。"
     PermissionItem.EXACT_ALARM ->
-        "Exact Alarms" to "Triggers scheduled focus sessions precisely on time."
+        "精确闹钟" to "确保定时专注计划按设定时间启动。"
 }

@@ -85,7 +85,7 @@ private fun ActiveSessionView(
             modifier = Modifier.padding(top = 16.dp)
         ) {
             Text(
-                text = "ACTIVE FOCUS SESSION",
+                text = "专注进行中",
                 style = MaterialTheme.typography.labelMedium.copy(
                     letterSpacing = 3.sp,
                     fontWeight = FontWeight.Bold
@@ -94,7 +94,7 @@ private fun ActiveSessionView(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Full lockdown is running",
+                text = "全屏锁定已启动",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -130,7 +130,7 @@ private fun ActiveSessionView(
             modifier = Modifier.padding(bottom = 16.dp)
         ) {
             Text(
-                text = "Tap timer overlay on your screen to view emergency exit",
+                text = "点击屏幕上的计时浮窗，可查看紧急退出方式",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
@@ -156,7 +156,7 @@ private fun TimerSetupView(
     ) {
         // Top Header
         Text(
-            text = "Block me",
+            text = "专注锁机",
             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -262,7 +262,7 @@ private fun TimerSetupView(
                 )
             } else {
                 Text(
-                    text = "Start",
+                    text = "开始专注",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
                 )
             }
@@ -271,7 +271,7 @@ private fun TimerSetupView(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Full lockdown starts immediately. You cannot exit until time is up.",
+            text = "开始后立即进入全屏锁定，计时结束前无法退出（紧急退出除外）。",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
             textAlign = TextAlign.Center

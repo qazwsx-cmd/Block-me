@@ -132,7 +132,7 @@ class PermissionGateViewModel @Inject constructor(
                 putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, component)
                 putExtra(
                     DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                    "Required to lock the screen when blocked actions are detected during focus sessions."
+                    "专注期间检测到受限制的操作时，需要此权限来锁定屏幕。"
                 )
             }
         }

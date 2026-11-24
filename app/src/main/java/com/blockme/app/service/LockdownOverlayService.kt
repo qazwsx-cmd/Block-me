@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.IBinder
 import android.view.Gravity
 import android.view.WindowManager
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
@@ -72,6 +73,7 @@ class LockdownOverlayService : Service(),
     private val totalMs = mutableLongStateOf(0L)
     private val isPhoneAppMode = mutableStateOf(false)
     private val isUnlockChallengeEnabled = mutableStateOf(true)
+    private val whitelistAppCount = mutableIntStateOf(0)
 
     // Current window position for floating mode
     private var floatingX = 40
@@ -87,8 +89,13 @@ class LockdownOverlayService : Service(),
                     scope.launch {
                         if (userPreferences.isSessionActive.first()) {
                             isUnlockChallengeEnabled.value = userPreferences.unlockChallengeEnabled.first()
-                            userPreferences.setPhoneAppOpen(false)
-                            showOverlay()
+                            val whitelistMode = userPreferences.whitelistNavigationMode.first()
+                            if (whitelistMode) {
+                                removeOverlay()
+                            } else {
+                                userPreferences.setPhoneAppOpen(false)
+                                showOverlay()
+                            }
                         } else {
                             removeOverlay()
                             stopSelf()
@@ -98,9 +105,18 @@ class LockdownOverlayService : Service(),
                 Intent.ACTION_SCREEN_OFF -> {
                     // Screen turned off (power button pressed) — session keeps running
                 }
+                Constants.ACTION_WHITELIST_MODE_CHANGED -> {
+                    val whitelistMode = intent.getBooleanExtra(Constants.EXTRA_WHITELIST_MODE, false)
+                    scope.launch {
+                        if (whitelistMode) {
+                            removeOverlay()
+                        } else if (userPreferences.isSessionActive.first()) {
+                            showOverlay()
+                        }
+                    }
+                }
                 Constants.ACTION_SESSION_COMPLETE,
                 "com.blockme.app.ACTION_SESSION_COMPLETE" -> {
-                    // Session ended from timer or external signal — dismiss immediately
                     removeOverlay()
                     stopSelf()
                 }
@@ -119,9 +135,14 @@ class LockdownOverlayService : Service(),
             addAction(Intent.ACTION_USER_PRESENT)
             addAction(Intent.ACTION_SCREEN_OFF)
             addAction(Constants.ACTION_SESSION_COMPLETE)
+            addAction(Constants.ACTION_WHITELIST_MODE_CHANGED)
             addAction("com.blockme.app.ACTION_SESSION_COMPLETE")
         }
-        registerReceiver(screenEventReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(screenEventReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(screenEventReceiver, filter)
+        }
 
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -136,11 +157,13 @@ class LockdownOverlayService : Service(),
             Constants.ACTION_SHOW_OVERLAY, null -> {
                 scope.launch {
                     val active = userPreferences.isSessionActive.first()
+                    val whitelistMode = userPreferences.whitelistNavigationMode.first()
                     isUnlockChallengeEnabled.value = userPreferences.unlockChallengeEnabled.first()
                     goalText.value = userPreferences.sessionGoal.first()
                     totalMs.longValue = userPreferences.sessionDurationMs.first()
+                    whitelistAppCount.intValue = userPreferences.whitelistedPackages.first().size
                     if (active) {
-                        showOverlay()
+                        if (whitelistMode) removeOverlay() else showOverlay()
                         startSessionObserver()
                     } else {
                         removeOverlay()
@@ -183,6 +206,11 @@ class LockdownOverlayService : Service(),
             }
         }
         scope.launch {
+            userPreferences.whitelistedPackages.collect { packages ->
+                whitelistAppCount.intValue = packages.size
+            }
+        }
+        scope.launch {
             while (true) {
                 val active = userPreferences.isSessionActive.first()
                 if (!active) {
@@ -221,6 +249,10 @@ class LockdownOverlayService : Service(),
                     goalText = goalText.value,
                     isPhoneAppMode = isPhoneAppMode.value,
                     isUnlockChallengeEnabled = isUnlockChallengeEnabled.value,
+                    whitelistAppCount = whitelistAppCount.intValue,
+                    onWhitelistButtonClicked = {
+                        sendBroadcast(Intent(Constants.ACTION_OPEN_WHITELIST).setPackage(packageName))
+                    },
                     onPhoneButtonClicked = {
                         scope.launch {
                             userPreferences.setPhoneAppOpen(true)

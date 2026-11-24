@@ -47,8 +47,8 @@ fun DurationSelector(
 
     val currentMinutes = if (hours == 3) rememberedMinutes else rawMinutes
 
-    val row1 = listOf(15 to "15m", 30 to "30m", 45 to "45m")
-    val row2 = listOf(60 to "1h", 120 to "2h", 180 to "3h")
+    val row1 = listOf(15 to "15 分钟", 30 to "30 分钟", 45 to "45 分钟")
+    val row2 = listOf(60 to "1 小时", 120 to "2 小时", 180 to "3 小时")
 
     Column(modifier = modifier) {
         // Row 1 of enlarged buttons: 15m, 30m, 45m

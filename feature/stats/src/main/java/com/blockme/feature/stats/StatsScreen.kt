@@ -53,13 +53,13 @@ fun StatsScreen(
             .padding(horizontal = 20.dp, vertical = 24.dp)
     ) {
         Text(
-            text = "Your Progress",
+            text = "专注成果",
             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "Digital wellbeing analytics & consistency",
+            text = "专注数据与习惯连续性",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -110,12 +110,12 @@ fun StatsScreen(
 @Composable
 private fun StatsGrid(stats: SessionStats) {
     val items = listOf(
-        "Total Sessions" to "${stats.totalSessions}",
-        "Total Focus" to stats.totalFocusMs.toHoursString(),
-        "Current Streak" to "${stats.currentStreak} days",
-        "Longest Streak" to "${stats.longestStreak} days",
-        "Average Session" to stats.averageDurationMs.toShortDurationString(),
-        "Temptations Blocked" to "${stats.totalTemptations}"
+        "累计专注次数" to "${stats.totalSessions}",
+        "累计专注时长" to stats.totalFocusMs.toHoursString(),
+        "当前连续天数" to "${stats.currentStreak} 天",
+        "最长连续天数" to "${stats.longestStreak} 天",
+        "平均单次时长" to stats.averageDurationMs.toShortDurationString(),
+        "拦截分心尝试" to "${stats.totalTemptations}"
     )
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -181,13 +181,13 @@ private fun NoDataView() {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "No focus sessions recorded yet.",
+                text = "还没有专注记录",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Start your first session to track streaks and analytics.",
+                text = "开始第一次专注，记录你的专注数据与连续天数。",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center

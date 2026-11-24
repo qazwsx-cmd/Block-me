@@ -78,13 +78,13 @@ fun ScheduleScreen(
                 .padding(horizontal = 20.dp, vertical = 24.dp)
         ) {
             Text(
-                text = "Schedules",
+                text = "定时计划",
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Auto-start recurring focus sessions",
+                text = "按计划自动启动专注锁定",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -101,13 +101,13 @@ fun ScheduleScreen(
                         modifier = Modifier.padding(horizontal = 32.dp)
                     ) {
                         Text(
-                            text = "No recurring schedules",
+                            text = "暂无重复计划",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Tap the + button below to create your first scheduled focus session.",
+                            text = "点击下方的 + 按钮，创建第一条自动专注计划。",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
@@ -142,7 +142,7 @@ fun ScheduleScreen(
                 .align(Alignment.BottomEnd)
                 .padding(20.dp)
         ) {
-            Icon(Icons.Filled.Add, contentDescription = "Add schedule")
+            Icon(Icons.Filled.Add, contentDescription = "添加计划")
         }
     }
 
@@ -209,7 +209,7 @@ private fun ScheduleCard(
                 IconButton(onClick = onDelete) {
                     Icon(
                         imageVector = Icons.Filled.DeleteOutline,
-                        contentDescription = "Delete schedule",
+                        contentDescription = "删除计划",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -219,13 +219,13 @@ private fun ScheduleCard(
 }
 
 private val DAYS_OF_WEEK = listOf(
-    java.util.Calendar.MONDAY to "Mon",
-    java.util.Calendar.TUESDAY to "Tue",
-    java.util.Calendar.WEDNESDAY to "Wed",
-    java.util.Calendar.THURSDAY to "Thu",
-    java.util.Calendar.FRIDAY to "Fri",
-    java.util.Calendar.SATURDAY to "Sat",
-    java.util.Calendar.SUNDAY to "Sun"
+    java.util.Calendar.MONDAY to "周一",
+    java.util.Calendar.TUESDAY to "周二",
+    java.util.Calendar.WEDNESDAY to "周三",
+    java.util.Calendar.THURSDAY to "周四",
+    java.util.Calendar.FRIDAY to "周五",
+    java.util.Calendar.SATURDAY to "周六",
+    java.util.Calendar.SUNDAY to "周日"
 )
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -259,7 +259,7 @@ private fun AddScheduleDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "New Focus Schedule",
+                text = "新建专注计划",
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
             )
         },
@@ -271,7 +271,7 @@ private fun AddScheduleDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Select Start Time",
+                    text = "选择开始时间",
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.align(Alignment.Start)
@@ -292,7 +292,7 @@ private fun AddScheduleDialog(
 
                 // Duration Selector
                 Text(
-                    text = "Session Duration",
+                    text = "专注时长",
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.align(Alignment.Start)
@@ -304,7 +304,7 @@ private fun AddScheduleDialog(
                 ) {
                     listOf(15, 30, 45, 60, 90, 120, 180).forEach { min ->
                         val ms = min * 60_000L
-                        val label = if (min >= 60) "${min / 60}h${if (min % 60 != 0) " ${min % 60}m" else ""}" else "${min}m"
+                        val label = if (min >= 60) "${min / 60}小时${if (min % 60 != 0) "${min % 60}分钟" else ""}" else "${min}分钟"
                         FilterChip(
                             selected = durationMs == ms,
                             onClick = { durationMs = ms },
@@ -317,7 +317,7 @@ private fun AddScheduleDialog(
 
                 // Repeat Days Selection (All 7 Days)
                 Text(
-                    text = "Repeat Days",
+                    text = "重复日期",
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.align(Alignment.Start)
@@ -349,7 +349,7 @@ private fun AddScheduleDialog(
                 OutlinedTextField(
                     value = goalText,
                     onValueChange = { goalText = it },
-                    label = { Text("Goal / Title (optional)") },
+                    label = { Text("目标 / 标题（选填）") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -362,7 +362,7 @@ private fun AddScheduleDialog(
                     onConfirm(
                         FocusSchedule(
                             id = 0,
-                            label = if (goalText.isNotBlank()) goalText else "Scheduled Focus",
+                            label = if (goalText.isNotBlank()) goalText else "定时专注",
                             hourOfDay = timePickerState.hour,
                             minuteOfHour = timePickerState.minute,
                             durationMs = durationMs,
@@ -374,12 +374,12 @@ private fun AddScheduleDialog(
                     )
                 }
             ) {
-                Text("Save Schedule")
+                Text("保存计划")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text("取消")
             }
         }
     )
@@ -435,9 +435,9 @@ fun FocusSchedule.formattedDays(): String {
     )
 
     return when {
-        days.containsAll(all7) -> "Every day"
-        days == weekdays -> "Mon - Fri"
-        days == weekends -> "Weekends"
+        days.containsAll(all7) -> "每天"
+        days == weekdays -> "周一至周五"
+        days == weekends -> "周末"
         else -> {
             DAYS_OF_WEEK
                 .filter { days.contains(it.first) }

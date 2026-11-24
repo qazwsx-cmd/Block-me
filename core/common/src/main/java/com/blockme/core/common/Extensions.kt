@@ -16,12 +16,12 @@ import java.util.concurrent.TimeUnit
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Constants.DATASTORE_NAME)
 
 /**
- * Format hour (0-23) and minute (0-59) to 12-hour time string with AM/PM (e.g. "09:00 AM", "12:30 PM").
+ * Format hour (0-23) and minute (0-59) using Chinese AM/PM labels.
  */
 fun formatTimeWithAmPm(hourOfDay: Int, minuteOfHour: Int): String {
     val hour12 = if (hourOfDay % 12 == 0) 12 else hourOfDay % 12
-    val amPm = if (hourOfDay < 12) "AM" else "PM"
-    return String.format(Locale.getDefault(), "%02d:%02d %s", hour12, minuteOfHour, amPm)
+    val period = if (hourOfDay < 12) "上午" else "下午"
+    return String.format(Locale.getDefault(), "%s %02d:%02d", period, hour12, minuteOfHour)
 }
 
 /**
@@ -36,29 +36,29 @@ fun Long.toFormattedTime(): String {
 }
 
 /**
- * Format milliseconds to a human-readable short string (e.g. "1h 30m").
+ * Format milliseconds to a concise Chinese duration string.
  */
 fun Long.toShortDurationString(): String {
-    if (this <= 0L) return "0m"
+    if (this <= 0L) return "0 分钟"
     val hours = TimeUnit.MILLISECONDS.toHours(this)
     val minutes = TimeUnit.MILLISECONDS.toMinutes(this) % 60
     return when {
-        hours > 0 && minutes > 0 -> "${hours}h ${minutes}m"
-        hours > 0 -> "${hours}h"
-        else -> "${minutes}m"
+        hours > 0 && minutes > 0 -> "${hours} 小时 ${minutes} 分钟"
+        hours > 0 -> "${hours} 小时"
+        else -> "${minutes} 分钟"
     }
 }
 
 /**
- * Format milliseconds to fractional hours string (e.g. "1.5 hrs").
+ * Format milliseconds to fractional hours in Chinese.
  */
 fun Long.toHoursString(): String {
     val hours = this / (1000.0 * 60 * 60)
     return if (hours < 1.0) {
         val minutes = TimeUnit.MILLISECONDS.toMinutes(this)
-        "${minutes}m"
+        "${minutes} 分钟"
     } else {
-        String.format("%.1fh", hours)
+        String.format(Locale.CHINA, "%.1f 小时", hours)
     }
 }
 
